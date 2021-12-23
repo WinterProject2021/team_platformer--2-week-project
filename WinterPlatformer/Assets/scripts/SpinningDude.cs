@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class SpinningDude : MonoBehaviour
 {
-    
+    [SerializeField] private float Speed = 10F;
+    private float AngularSpeed = 90F;
 
     // Start is called before the first frame update
     void Start()
@@ -31,8 +32,8 @@ public class SpinningDude : MonoBehaviour
 
         // Space.Self => Local
         // Space.World => Global
-        transform.Rotate(Vector3.up * 90F * FDT, Space.Self);
+        transform.Rotate(Vector3.right * AngularSpeed * FDT, Space.Self);
 
-        transform.Translate(Vector3.forward * 32F * FDT, Space.World);
+        transform.Translate(Vector3.forward * Speed * FDT, Space.World);
     }
 }
