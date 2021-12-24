@@ -54,9 +54,9 @@ public class JumpState : ActorState
                 return ((SwingState) next).AttemptGrapple();
             }, "Swing");
 
-            if(success) {
-                // i mean we don't really need to do much here
-            }
+            // if(success) {
+            //     // i mean we don't really need to do much here
+            // }
 
             return success;
         }

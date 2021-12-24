@@ -47,7 +47,6 @@ public class CheckGrapples : MonoBehaviour
             DetectedGrapples.Add(other.GetInstanceID(), grp);
             Grapples[grp.index] = grp;
 
-            // Debug.Log(other + " has joined the db");
         }
     }
 
@@ -62,7 +61,6 @@ public class CheckGrapples : MonoBehaviour
 
             DetectedGrapples.Remove(instid);
             
-            // Debug.Log(other + " has left the db");
         }
     }
 
@@ -79,13 +77,17 @@ public class CheckGrapples : MonoBehaviour
 
     Transform FindNearestDirection() {
         int inst_id = -1;
-        float min_d = .15F;
+        float min_d = 0F;
 
         for(int i = 0;i < 10;i++) {
             if(Grapples[i].index == -1)
                 continue;
             else {
-                float cur_d = VectorHeader.Dot(View.forward, (Grapples[i].collider.transform.position - View.position).normalized);
+                Vector3 d = Grapples[i].collider.transform.position - View.position;
+                float mag = d.sqrMagnitude;
+                mag = 1 / mag;
+
+                float cur_d = VectorHeader.Dot(View.forward, (d).normalized);
             
                 if(cur_d > min_d) {
                     min_d   = cur_d;
@@ -94,8 +96,10 @@ public class CheckGrapples : MonoBehaviour
             }
         }
 
-        // if(inst_id != -1)
-            // Debug.DrawLine(Actor.position, DetectedGrapples[inst_id].collider.transform.position, Color.red);
+        if(inst_id != -1)
+            Debug.DrawLine(Actor.position, DetectedGrapples[inst_id].collider.transform.position, Color.red);
+
+
         return inst_id == -1 ? null : DetectedGrapples[inst_id].collider.transform;
     }
 }

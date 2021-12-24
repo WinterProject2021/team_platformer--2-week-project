@@ -35,6 +35,18 @@ public class FallState : ActorState
         ActorHeader.Actor Actor = Machine.GetActor;
         Vector3 Velocity = Actor.velocity;
         
+        if(Machine.GetPlayerInput.GetXTrigger) {
+            bool success = Machine.GetFSM.TrySwitchState( (ActorState next) => {
+                return ((SwingState) next).AttemptGrapple();
+            }, "Swing");
+
+            // if(success) {
+            //     // i mean we don't really need to do much here
+            // }
+
+            return success;
+        }
+
         // that long mathf.abs is essentially: V ->  <- N. When v is petruding into the boundary of N. 
         if(Actor.Ground.stable && Mathf.Abs(VectorHeader.Dot(Velocity, Actor.Ground.normal)) <= 0.1F) {
             Machine.GetFSM.SwitchState((ActorState next) => { 
