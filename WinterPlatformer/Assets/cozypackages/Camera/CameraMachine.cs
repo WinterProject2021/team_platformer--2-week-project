@@ -35,9 +35,9 @@ public class CameraMachine : MonoBehaviour
 
     // [SerializeField] private ExecutionHeader.Camera.OnJumpExecution JumpExecution;
     // [SerializeField] private ExecutionHeader.Camera.OnHangExecution HangExecution;
-    [SerializeField] private ExecutionHeader.Camera.OnViewReassignment ViewReassignment; // outside classes take us over
-    [SerializeField] private ExecutionHeader.Camera.OnViewActiveExecution ActiveViewExecution;
-    [SerializeField] private ExecutionHeader.Camera.OnViewInActiveExecution InActiveViewExecution;
+    // [SerializeField] private ExecutionHeader.Camera.OnViewReassignment ViewReassignment; // outside classes take us over
+    // [SerializeField] private ExecutionHeader.Camera.OnViewActiveExecution ActiveViewExecution;
+    // [SerializeField] private ExecutionHeader.Camera.OnViewInActiveExecution InActiveViewExecution;
 
     public float VerticalOffset = 4F;
 
@@ -83,44 +83,44 @@ public class CameraMachine : MonoBehaviour
     {
         Middleman.SetMachine(this);
 
-        GetEventRegistry.Event_ActorToggledView += (bool active) => 
-        {
-            if(active)
-            {
-                FSM.SwitchState("FirstPerson");
-                MainChain.AddExecution(ActiveViewExecution);
-            }
-            else
-            {
-                FSM.SwitchState("Manual");
-                MainChain.AddExecution(InActiveViewExecution);
-            }
-        };
+        // GetEventRegistry.Event_ActorToggledView += (bool active) => 
+        // {
+        //     if(active)
+        //     {
+        //         FSM.SwitchState("FirstPerson");
+        //         MainChain.AddExecution(ActiveViewExecution);
+        //     }
+        //     else
+        //     {
+        //         FSM.SwitchState("Manual");
+        //         MainChain.AddExecution(InActiveViewExecution);
+        //     }
+        // };
 
-        GetEventRegistry.Func_GetCameraPosition += () => ViewPosition;
-        GetEventRegistry.Func_GetCameraOrientation += () => ViewRotation;
+        // GetEventRegistry.Func_GetCameraPosition += () => ViewPosition;
+        // GetEventRegistry.Func_GetCameraOrientation += () => ViewRotation;
     
-        GetEventRegistry.Func_SetCameraPosition += (Vector3 p) => 
-        { 
-            // we'll need to delay reassignment of our camera object until the very end of cameramachine's lifecycle
-            ViewReassignment.PreparePosition(p);
+        // GetEventRegistry.Func_SetCameraPosition += (Vector3 p) => 
+        // { 
+        //     // we'll need to delay reassignment of our camera object until the very end of cameramachine's lifecycle
+        //     ViewReassignment.PreparePosition(p);
             
-            if(!MainChain.IsExecutionActive(ViewReassignment.GetKey))
-                MainChain.AddExecution(ViewReassignment);
+        //     if(!MainChain.IsExecutionActive(ViewReassignment.GetKey))
+        //         MainChain.AddExecution(ViewReassignment);
 
-            // ViewTransform.position = p;
-        };
+        //     // ViewTransform.position = p;
+        // };
 
-        GetEventRegistry.Func_SetCameraOrientation += (Quaternion q) => 
-        { 
-            // same for this thing too
-            ViewReassignment.PrepareRotation(q);
+        // GetEventRegistry.Func_SetCameraOrientation += (Quaternion q) => 
+        // { 
+        //     // same for this thing too
+        //     ViewReassignment.PrepareRotation(q);
 
-            if(!MainChain.IsExecutionActive(ViewReassignment.GetKey))
-                MainChain.AddExecution(ViewReassignment);
+        //     if(!MainChain.IsExecutionActive(ViewReassignment.GetKey))
+        //         MainChain.AddExecution(ViewReassignment);
 
-            // ViewTransform.rotation = q;
-        };
+        //     // ViewTransform.rotation = q;
+        // };
     }
 
     public MonoFSM<string, CameraState> GetFSM => FSM;
