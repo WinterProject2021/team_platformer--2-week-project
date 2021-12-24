@@ -252,7 +252,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   MaxVerticalAngle: 150
-  DolleyDistance: 5
+  DolleyDistance: 0
   EasingCurve:
     serializedVersion: 2
     m_Curve:
@@ -278,28 +278,6 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   MaxOrbitSpeed: 80
-  ViewReassignment:
-    key: 0
-  ActiveViewExecution:
-    key: 0
-    ToCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    Timer:
-      TotalElapsedTime: 0
-  InActiveViewExecution:
-    key: 0
-    ToCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    Timer:
-      TotalElapsedTime: 0
   VerticalOffset: 0.5
 --- !u!114 &189889695
 MonoBehaviour:
@@ -967,7 +945,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1129296175}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -11.75, z: -4.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.75, z: 0.5}
   m_Children: []
   m_Father: {fileID: 1795199916}
@@ -1098,7 +1076,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1795199912}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.75, y: 16.15, z: 1.75}
+  m_LocalPosition: {x: -3, y: 4.433, z: -2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1129296176}
@@ -1118,12 +1096,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Key: Ground
-  MomentumCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   RunRotationalCurve:
     serializedVersion: 2
     m_Curve:
@@ -1145,12 +1117,6 @@ MonoBehaviour:
       weightedMode: 0
       inWeight: 0.079131424
       outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  AnimatorSpeedCurve:
-    serializedVersion: 2
-    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -1202,23 +1168,10 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  TiltCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  TiltSpeedAmount: 0.5
-  TiltSpeedInfluence: 0.5
-  TiltSpeedVelocity: 5
   MaxRotateSpeed: 960
   MaxMoveSpeed: 6
   MoveAcceleration: 30
   WalkAcceleration: 10
-  LastLandingTimer:
-    TotalDeltaDifference: 0
-  ExitViewTime:
-    TotalDeltaDifference: 0
 --- !u!114 &1795199918
 MonoBehaviour:
   m_ObjectHideFlags: 0

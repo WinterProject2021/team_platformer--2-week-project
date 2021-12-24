@@ -6,7 +6,7 @@ public class ManualOrbitState : CameraState
 {
     private float ease;
 
-    protected override void OnStateInitialize() { }
+    protected override void OnStateInitialize() { Machine.GetFSM.SetState(this.GetKey); }
 
     public override void Enter(CameraState prev) { }
 
@@ -16,46 +16,51 @@ public class ManualOrbitState : CameraState
         Machine.ApplyOrbitPosition();
     }
 
-    public override void FixedTick(float fdt)
-    {
+    public override void FixedTick(float fdt) {
+        
+    }
+
+    public override void Tick(float dt) { 
+        Cursor.lockState = CursorLockMode.Locked;
         const float max = 0.5F;
 
         PlayerInput PlayerInput = Machine.GetPlayerInput;
         Vector2 Mouse = PlayerInput.GetRawMouse;
+        Mouse[1] *= -1F;
         
-        if(AwaitTransitionToAlign(PlayerInput.GetLeftTrigger))
-            return;
+        // if(AwaitTransitionToAlign(PlayerInput.GetLeftTrigger))
+        //     return;
 
-        Machine.ComputeEasingTime(
-            Mouse.sqrMagnitude,
-            ref ease,
-            max,
-            fdt
-        );
+        // Machine.ComputeEasingTime(
+        //     Mouse.sqrMagnitude,
+        //     ref ease,
+        //     max,
+        //     fdt
+        // );
 
-        float amt = Machine.ComputeEasingAmount(
-            ease / max,
-            fdt
-        );
+        // float amt = Machine.ComputeEasingAmount(
+        //     ease / max,
+        //     fdt
+        // );
+
+        float amt = 1;
 
         Machine.OrbitAroundTarget(Mouse * amt);
         Machine.ApplyOrbitPosition();
     }
 
-    public override void Tick(float dt) { }
-
-    bool AwaitTransitionToAlign(bool left_trigger) 
-    {
-        if (left_trigger)
-        {
-            Machine.GetFSM.SwitchState(
-            (CameraState next) => 
-            {
-                ((AlignOrbitState) next).Prepare();
-            }, "Align");
-            return true;
-        }
-        else
-            return false;
-    }
+    // bool AwaitTransitionToAlign(bool left_trigger) 
+    // {
+    //     if (left_trigger)
+    //     {
+    //         Machine.GetFSM.SwitchState(
+    //         (CameraState next) => 
+    //         {
+    //             // ((AlignOrbitState) next).Prepare();
+    //         }, "Align");
+    //         return true;
+    //     }
+    //     else
+    //         return false;
+    // }
 }
