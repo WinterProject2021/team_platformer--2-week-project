@@ -118,6 +118,22 @@ public class GroundState : ActorState
 
     private bool DetermineTransitions(bool XButton, bool SquareTrigger, ActorHeader.Actor Actor)
     {
+        if(Actor.Ground.stable) {
+            if(Machine.GetPlayerInput.GetXTrigger) {
+                Machine.GetFSM.SwitchState((ActorState next) => { 
+                    Machine.GetActor.SetSnapEnabled(false);
+                    Machine.GetActor.SetSnapType(ActorHeader.SlideSnapType.Never);
+                }, 
+                "Jump");
+                return true;
+            }
+        }
+        else {
+            Machine.GetFSM.SwitchState((ActorState next) => {
+                Machine.GetActor.SetSnapEnabled(false);
+            }, "Fall");
+            return true;
+        }
 
         return false;
     }

@@ -88,8 +88,8 @@ public static class ActorStateHeader
                 Machine.GetFSM.SwitchState(
                     (ActorState next) =>
                     {
-                        ((LedgeState)next).Prepare(Position + ledgehit.Auxillary_LocalToWorldDelta(),
-                                                   Position + ledgehit.Ledge_LocalToWorldDelta());
+                        // ((LedgeState)next).Prepare(Position + ledgehit.Auxillary_LocalToWorldDelta(),
+                                                //    Position + ledgehit.Ledge_LocalToWorldDelta());
                     }, "Ledge");
 
                 return true;
@@ -107,7 +107,7 @@ public static class ActorStateHeader
                 Machine.GetFSM.SwitchState(
                     (ActorState next) =>
                     {
-                        ((WallSlideState)next).Prepare(ledgehit.LedgePlanarNormal, Machine.GetModelView.forward);
+                        // ((WallSlideState)next).Prepare(ledgehit.LedgePlanarNormal, Machine.GetModelView.forward);
                     }, "WallSlide");
 
                 return true;
