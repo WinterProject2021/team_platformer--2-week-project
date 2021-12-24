@@ -1,4 +1,4 @@
-[Ll]ogs/
+/[Ll]ogs/
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
@@ -37,3 +37,4 @@ sysinfo.txt
 *.apk
 *.unitypackage
 *.log
+WinterPlatformer/Logs/shadercompiler-UnityShaderCompiler.exe5.log
