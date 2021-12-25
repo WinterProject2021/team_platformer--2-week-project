@@ -122,7 +122,6 @@ public class GroundState : ActorState
             if(Machine.GetPlayerInput.GetXTrigger) {
                 Machine.GetFSM.SwitchState((ActorState next) => { 
                     Machine.GetActor.SetSnapEnabled(false);
-                    Machine.GetActor.SetSnapType(ActorHeader.SlideSnapType.Never);
                 }, 
                 "Jump");
                 return true;

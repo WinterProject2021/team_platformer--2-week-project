@@ -111,7 +111,8 @@ public class SwingState : ActorState
         // get difference if larger then we are in need of fixing
         if(m > t_length * t_length) {
             vel = grapple_t.position + ta * (t_length / Mathf.Sqrt(m)) - Actor.position;
-            trace_v = VectorHeader.ClipVector(trace_v, ta.normalized);
+            // float old_v = trace_v.magnitude;
+            trace_v = VectorHeader.ClipVector(trace_v, ta.normalized); //.normalized * old_v;
 
             Machine.GetModelView.rotation = Quaternion.LookRotation(trace_v, transform.up);
         }

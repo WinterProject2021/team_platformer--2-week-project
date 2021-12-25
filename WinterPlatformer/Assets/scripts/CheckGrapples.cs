@@ -9,7 +9,7 @@ public class CheckGrapples : MonoBehaviour
     [SerializeField] private Transform View;
     [SerializeField] private Transform Actor;
 
-    struct GrappleReport {
+    [System.Serializable] struct GrappleReport {
         public int instance;
         public int index;
         public Collider collider;
@@ -22,19 +22,23 @@ public class CheckGrapples : MonoBehaviour
     }
 
     private Dictionary<int, GrappleReport> DetectedGrapples;
-    private GrappleReport[] Grapples;
+    [SerializeField] private GrappleReport[] Grapples;
     private int count;
+    private int alloc = 20;
 
     void Start() {
         DetectedGrapples = new Dictionary<int, GrappleReport>();
-        Grapples         = new GrappleReport[10];
+        Grapples         = new GrappleReport[alloc];
         count = 0;
 
-        for(int i = 0;i < 10;i++)
+        for(int i = 0;i < alloc;i++)
             Grapples[i] = new GrappleReport(-1, -1, null);  
     }
 
     void OnTriggerEnter(Collider other) { 
+        if(other.tag != "Grapple")
+            return;
+
         int instid = other.GetInstanceID();
         
         if(!DetectedGrapples.ContainsKey(instid )) {
@@ -42,7 +46,7 @@ public class CheckGrapples : MonoBehaviour
             grp.instance = instid;
             grp.collider = other;
             grp.index = count++;
-            count %= 10;
+            count %= alloc;
 
             DetectedGrapples.Add(other.GetInstanceID(), grp);
             Grapples[grp.index] = grp;
@@ -51,13 +55,16 @@ public class CheckGrapples : MonoBehaviour
     }
 
     void OnTriggerExit(Collider other) {
+        if(other.tag != "Grapple")
+            return;
+        
         int instid = other.GetInstanceID();
         
         if(DetectedGrapples.ContainsKey(instid)) {
             int idx = DetectedGrapples[instid].index;
             Grapples[idx].index = -1; // clear
             Grapples[idx].instance = -1; // clear
-            count--;
+            Grapples[idx].collider = null;
 
             DetectedGrapples.Remove(instid);
             
@@ -71,24 +78,34 @@ public class CheckGrapples : MonoBehaviour
         return t == null ? false : true;
     }
 
-    // void Update() {
-    //     FindNearestDirection();
-    // }
+    void Update() {
+        Transform t = FindNearestDirection();
+        if(t != null)
+            Debug.DrawLine(Actor.position, t.position, Color.red);
+    }
 
     Transform FindNearestDirection() {
         int inst_id = -1;
         float min_d = 0F;
 
-        for(int i = 0;i < 10;i++) {
+        for(int i = 0;i < alloc;i++) {
             if(Grapples[i].index == -1)
                 continue;
             else {
-                Vector3 d = Grapples[i].collider.transform.position - View.position;
-                float mag = d.sqrMagnitude;
-                mag = 1 / mag;
+                Debug.DrawLine(Actor.position, Grapples[i].collider.transform.position, Color.cyan);
+                //     // Grapples[i].collider.transform.position - View.position;
+                float toi = VectorHeader.LinePlaneIntersection(
+                    (Grapples[i].collider.transform.position, -Vector3.up),
+                    (View.position, View.up));
+                
 
-                float cur_d = VectorHeader.Dot(View.forward, (d).normalized);
-            
+                Vector3 d = Grapples[i].collider.transform.position - Vector3.up * toi - View.position;
+                float mag = d.magnitude;
+
+                Debug.DrawRay(View.position, d, Color.magenta);
+                float cur_d = VectorHeader.Dot(View.forward, d / mag);
+                // float cur_d = -VectorHeader.Dot(Vector3.Cross(View.forward, d), Vector3.up);
+
                 if(cur_d > min_d) {
                     min_d   = cur_d;
                     inst_id = Grapples[i].instance; 
