@@ -1,9 +1,10 @@
-/[Ll]ogs/
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
 Assets/AssetStoreTools*
 
 # Visual Studio cache directory
@@ -23,6 +24,7 @@ ExportedObj/
 *.booproj
 *.svd
 *.pdb
+*.mdb
 *.opendb
 *.VC.db
 
@@ -37,4 +39,4 @@ sysinfo.txt
 *.apk
 *.unitypackage
 *.log
-WinterPlatformer/Logs/shadercompiler-UnityShaderCompiler.exe5.log
+*.exe0

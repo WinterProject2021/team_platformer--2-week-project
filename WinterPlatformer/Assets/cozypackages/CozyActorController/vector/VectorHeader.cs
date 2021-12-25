@@ -94,7 +94,7 @@ namespace com.cozyhome.Vectors
             Vector3 _point,
             Vector3 _planecenter,
             Vector3 _planenormal)
-        => _point - ProjectVector(_planecenter - _point, _planenormal);
+        => _point + ProjectVector(_planecenter - _point, _planenormal);
 
         public static Vector3 CrossProjection(
             Vector3 _v,
