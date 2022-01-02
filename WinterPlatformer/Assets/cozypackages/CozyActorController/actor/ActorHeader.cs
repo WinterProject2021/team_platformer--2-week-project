@@ -49,6 +49,7 @@ namespace com.cozyhome.Actors
             public Vector3 actorpoint; // our actor's position at the time of our hit
             public Vector3 point; // our trace point
             public Vector3 normal; // our trace normal
+            public Collider collider;
             public float distance; // our trace distance
             public bool stable; // is our trace stable?
             public bool snapped; // is our trace snapping?
@@ -61,6 +62,7 @@ namespace com.cozyhome.Actors
                 distance = 0.0F;
                 stable = false;
                 snapped = false;
+                collider = null;
             }
         }
 
@@ -455,6 +457,7 @@ namespace com.cozyhome.Actors
             lastground.stable = ground.stable;
             lastground.snapped = ground.snapped;
             lastground.distance = ground.distance;
+            lastground.collider = ground.collider;
 
             ground.Clear();
 
@@ -520,6 +523,7 @@ namespace com.cozyhome.Actors
                     ground.actorpoint = gposition;
                     ground.stable = actor.DetermineGroundStability(velocity, _closest, layermask);
                     ground.snapped = false;
+                    ground.collider = _closest.collider;
 
                     gposition += groundtracedir * (_closest.distance);
                     /*
@@ -949,6 +953,7 @@ namespace com.cozyhome.Actors
             lastground.stable = ground.stable;
             lastground.snapped = ground.snapped;
             lastground.distance = ground.distance;
+            lastground.collider = ground.collider;
 
             ground.Clear();
 
@@ -1019,6 +1024,7 @@ namespace com.cozyhome.Actors
                     ground.actorpoint = gposition;
                     ground.stable = actor.DetermineGroundStability(velocity, _closest, layermask);
                     ground.snapped = false;
+                    ground.collider = _closest.collider;
 
                     /*
                      warp regardless of stablility. We'll only be setting our trace position
@@ -1155,7 +1161,14 @@ namespace com.cozyhome.Actors
 
                         VectorHeader.ClipVector(ref groundtracedir, _closest.normal);
                         groundtracedir.Normalize();
+                        
+                        // Debug.Log(Vector3.Angle(groundtracedir, -Vector3.up));
+                        
                         gtracelen -= _closest.distance;
+
+                        gtracelen = Mathf.Min(Mathf.Max(gtracelen, 0.0F), 0.01F ); // prevents sliding across asymptotically level slopes
+                        // usually the first iteration will deal with most scenarios involving somewhat perpendicular slopes. I now fully
+                        // understand why the KCC did this initially. -DC @ January 1st, 2021
                     }
                 }
                 else /* nothing discovered, end out of our ground loop */
@@ -1326,9 +1339,12 @@ namespace com.cozyhome.Actors
             float max_step,
             out Vector3 step_position)
         {
-            const float max_correspondance = 0.1F, min_step = 0.01F, aux_up = 0.05F;
+            const float max_correspondance = 0.5F, min_step = 0.01F, aux_up = 0.05F;
             Vector3 aux_feet = position;
             Vector3 prim_up = orientation * new Vector3(0, 1, 0);
+
+            // aux feet may be inaccurate for capsules where hit point height < radius
+            // instead we use a different point for capsules. God I need to abstract this again!?!? -DC @ January 1st, 2021
 
             aux_feet += orientation * archetype.Center(); /* account for local offset */
             aux_feet -= prim_up * archetype.Height() / 2F; /* account for character's height, to reach feet */
@@ -1337,12 +1353,16 @@ namespace com.cozyhome.Actors
 
             step_position = position;
 
-            /* simple angular check first. if its not planar to our primitive, its not a step. */
+
+            // DEPRECATED: CSO of Capsules and typical convex geometry will produce scenarios where steps are not valid. January 1st, 2021.
+            // /* simple angular check first. if its not planar to our primitive, its not a step. */
+            
+            // Capsules are an exception here, figure out a fix:
+//            Debug.Log(Mathf.Abs(VectorHeader.Dot(normal, prim_up)));
             if (Mathf.Abs(VectorHeader.Dot(normal, prim_up)) >= max_correspondance)
                 return false;
 
             /* then we'll linecast from our character's feet to a given step height, to determine how tall the step is */
-
             int linecast = ArchetypeHeader.TraceRay(
                 _position: aux_feet + prim_up * max_step,
                 _direction: -prim_up,
@@ -1368,6 +1388,8 @@ namespace com.cozyhome.Actors
 
             /* advance our step position */
             float step_height = max_step - tracebuffer[i0].distance;
+
+            // Debug.Log(step_height);
 
             /* if our step is too small, don't bother stepping upward as it may result in undefined behaviour */
             if (step_height < min_step)
@@ -1491,7 +1513,7 @@ namespace com.cozyhome.Actors
                                            // overlap buffer.
         public const float MIN_DISPLACEMENT = 0.001F; // min squared length of a displacement vector required for a Move() to proceed.
         public const float FLY_CREASE_EPSILON = 1F; // minimum distance angle during a crease check to disregard any normals being queried.
-        public const float INWARD_STEP_DISTANCE = 0.01F; // minimum displacement into a stepping plane
+        public const float INWARD_STEP_DISTANCE = 0.001F; // minimum displacement into a stepping plane
         public const float MIN_HOVER_DISTANCE = 0.025F;
         public const float MIN_PUSHBACK_DEPTH = 0.00005F;
     }

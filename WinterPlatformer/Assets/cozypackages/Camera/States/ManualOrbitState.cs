@@ -46,7 +46,17 @@ public class ManualOrbitState : CameraState
         float amt = 1;
 
         Machine.OrbitAroundTarget(Mouse * amt);
+
+        // Vector3 p = Machine.ViewPosition;
+
         Machine.ApplyOrbitPosition();
+
+        // Machine.SetViewPosition(
+        //     Vector3.Lerp(
+        //         p,
+        //         Machine.ViewPosition,
+        //         1F - Mathf.Exp(-360F * dt))
+        // );
     }
 
     // bool AwaitTransitionToAlign(bool left_trigger) 
