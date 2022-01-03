@@ -109,6 +109,15 @@ public class GroundState : ActorState
             VectorHeader.CrossProjection(ref Velocity, Vector3.up, Actor.Ground.normal);
             Actor.SetVelocity(Velocity * Speed);
 
+            if(Actor.Ground.stable) {
+                Rigidbody r = Actor.Ground.collider.attachedRigidbody;
+                if(r) {
+                    Actor.SetVelocity(
+                        Actor.velocity + (r.velocity)
+                    );
+                }
+            }
+
             // Animator.SetFloat("Tilt", TiltLerp);
             // Animator.SetFloat("Speed", Speed / MaxMoveSpeed);
 
@@ -137,25 +146,36 @@ public class GroundState : ActorState
         return false;
     }
 
-    public override void OnGroundHit(ActorHeader.GroundHit ground, ActorHeader.GroundHit lastground, LayerMask layermask) { }
+    public override void OnGroundHit(ActorHeader.GroundHit ground, ActorHeader.GroundHit lastground, LayerMask layermask) {
+
+        if(ground.stable) {
+            Rigidbody r = ground.collider.attachedRigidbody;
+            if(r) {
+                const float playermass = 8F;
+                r.AddForceAtPosition(Physics.gravity * playermass, ground.point, ForceMode.Force);
+            }
+        }
+    
+    }
     public override void OnTraceHit(ActorHeader.TraceHitType tracetype, RaycastHit trace, Vector3 position, Vector3 velocity) { }
     public override void OnTriggerHit(ActorHeader.TriggerHitType triggertype, Collider trigger) { }
     private float MoveRotate(Vector3 velocity, Vector3 move, float rate)
     {
+        ActorHeader.Actor Actor = Machine.GetActor;
         Quaternion Old = Machine.GetModelView.rotation;
         
         float angularmovedifference = Vector3.Angle(velocity, move);
 
         if(angularmovedifference >= 110F)
         {
-            Machine.GetModelView.rotation = Quaternion.LookRotation(move, Vector3.up);
+            Actor.SetOrientation( Quaternion.LookRotation(move, Vector3.up) );
         }   
         else
         {
-            Machine.GetModelView.rotation = Quaternion.RotateTowards(
+            Actor.SetOrientation(  Quaternion.RotateTowards(
                     Machine.GetModelView.rotation,
                     Quaternion.LookRotation(move, Vector3.up),
-                    rate);
+                    rate) );
         }
 
         float YAngle = Vector3.SignedAngle(

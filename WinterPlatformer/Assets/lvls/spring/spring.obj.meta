@@ -1,19 +1,9 @@
 fileFormatVersion: 2
-guid: ab3fb15f6fd88c6448af436b18bfc426
+guid: 0cb417c72dc0681458e47375fbbe7698
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: __TB_empty.003
-    second: {fileID: 2100000, guid: 5db56007ff34c5e4fb2e7377d034efe6, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: __TB_empty.004
-    second: {fileID: 2100000, guid: 5db56007ff34c5e4fb2e7377d034efe6, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -46,12 +36,12 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 1
+    addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
-    importVisibility: 1
-    importBlendShapes: 1
-    importCameras: 1
+    importVisibility: 0
+    importBlendShapes: 0
+    importCameras: 0
     importLights: 1
     fileIdsGeneration: 2
     swapUVChannels: 0
@@ -60,7 +50,7 @@ ModelImporter:
     keepQuads: 0
     weldVertices: 1
     bakeAxisConversion: 0
-    preserveHierarchy: 0
+    preserveHierarchy: 1
     skinWeightsMode: 0
     maxBonesPerVertex: 4
     minBoneWeight: 0.001

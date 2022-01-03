@@ -25,7 +25,14 @@ public class SwingState : ActorState
         Timer.Reset();
 
         ActorHeader.Actor Actor = Machine.GetActor;
-        Vector3 Velocity = Actor.velocity;
+        Vector3 Tension = (Actor.position - grapple_t.position);
+        //Vector3 Velocity = Vector3.zero; //VectorHeader.ClipVector(Actor.velocity, Vector3.Cross(Actor.velocity, Tension).normalized);// Vector3.zero;//Actor.velocity;
+        // generate a v vector that exists on the halfplane containing T;
+
+        Vector3 P = Vector3.Cross(Tension, Vector3.up);
+        P.Normalize();
+
+        Vector3 Velocity = VectorHeader.ClipVector(Actor.velocity, P);
 
         swingvel = Velocity;
 
@@ -35,7 +42,12 @@ public class SwingState : ActorState
     public override void Exit(ActorState next) { }
 
     public override void OnGroundHit(ActorHeader.GroundHit ground, ActorHeader.GroundHit lastground, LayerMask layermask) { }
-    public override void OnTraceHit(ActorHeader.TraceHitType tracetype, RaycastHit trace, Vector3 position, Vector3 velocity) { }
+    public override void OnTraceHit(ActorHeader.TraceHitType tracetype, RaycastHit trace, Vector3 position, Vector3 velocity) {
+        // this.swingvel =  -Machine.GetActor.velocity;
+        // Machine.GetActor.SetVelocity( this.swingvel );
+        // this.swingvel *= Time.fixedDeltaTime;
+    }
+
     public override void OnTriggerHit(ActorHeader.TriggerHitType triggertype, Collider trigger) { }
 
     Vector3 swingvel = Vector3.zero;
@@ -51,7 +63,8 @@ public class SwingState : ActorState
         Vector3 tmpvel = swingvel * fdt;
 
         Swing(ref tmpvel, ref Velocity, fdt); 
-        Actor.SetVelocity(Velocity / fdt);
+        Vector3 ta = (Actor.position - grapple_t.position);
+        Actor.SetVelocity(Velocity / fdt/* + Vector3.Cross(ta, Vector3.up) * 20F * Velocity.magnitude*/);
         swingvel = tmpvel / fdt;
 
         Timer.Accumulate(fdt);
@@ -108,13 +121,18 @@ public class SwingState : ActorState
         float l = maxt_length * (1 - t) + mint_length * t;
         t_length = Mathf.MoveTowards(t_length, l, 20F * fdt);
 
+        // get rotation basis and rotate vel based on its magnitude
+        // Vector3 Move = ActorStateHeader.ComputeMoveVector(Machine.GetPlayerInput.GetRawMove, 
+        //     Machine.GetCameraView.rotation, 
+        //     Vector3.up
+        // );
+
         // get difference if larger then we are in need of fixing
         if(m > t_length * t_length) {
             vel = grapple_t.position + ta * (t_length / Mathf.Sqrt(m)) - Actor.position;
-            // float old_v = trace_v.magnitude;
-            trace_v = VectorHeader.ClipVector(trace_v, ta.normalized); //.normalized * old_v;
-
-            Machine.GetModelView.rotation = Quaternion.LookRotation(trace_v, transform.up);
+            Vector3 tan = ta.normalized;
+            trace_v = VectorHeader.ClipVector(trace_v, tan); //.normalized * old_v;
+            Actor.SetOrientation( Quaternion.LookRotation(trace_v, -tan));
         }
         else
             vel = trace_v;

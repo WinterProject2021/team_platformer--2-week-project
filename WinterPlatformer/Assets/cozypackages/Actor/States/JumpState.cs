@@ -15,6 +15,15 @@ public class JumpState : ActorState
         Vector3 XZ = Velocity - Vector3.up * Vector3.Dot(Velocity, Vector3.up);
         Velocity   = XZ + Vector3.up * Mathf.Sqrt(2F * Physics.gravity.magnitude * jh);
 
+        if(Actor.Ground.stable && Actor.Ground.snapped) {
+            Rigidbody r = Actor.Ground.collider.attachedRigidbody;
+            if(r) {
+                // Velocity += r.Force * 10F; 
+                Velocity += r.GetPointVelocity(Actor.position) * 2.0F;
+                //Debug.Log(r.velocity);
+            }
+        }
+
         Actor.SetVelocity(Velocity);
     }
 

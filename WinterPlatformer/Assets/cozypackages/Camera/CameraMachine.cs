@@ -70,13 +70,13 @@ public class CameraMachine : MonoBehaviour
         Middleman.SetFixedDeltaTime(fdt);
         MainChain.Tick();
 
-        SolveOcclusion();
 
     }
 
     public void U_Update()
     {
         FSM.Current.Tick(Time.deltaTime);
+        SolveOcclusion();
     }
 
     private void AssignExecutions()
