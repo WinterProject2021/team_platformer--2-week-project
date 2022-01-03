@@ -132,7 +132,7 @@ public class SwingState : ActorState
             vel = grapple_t.position + ta * (t_length / Mathf.Sqrt(m)) - Actor.position;
             Vector3 tan = ta.normalized;
             trace_v = VectorHeader.ClipVector(trace_v, tan); //.normalized * old_v;
-            Machine.GetModelView.rotation = Quaternion.LookRotation(trace_v, -tan);
+            Actor.SetOrientation( Quaternion.LookRotation(trace_v, -tan));
         }
         else
             vel = trace_v;

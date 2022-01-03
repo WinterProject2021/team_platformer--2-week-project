@@ -128,7 +128,7 @@ public class GroundState : ActorState
     private bool DetermineTransitions(bool XButton, bool SquareTrigger, ActorHeader.Actor Actor)
     {
         if(Actor.Ground.stable) {
-            if(Machine.GetPlayerInput.GetXButton) {
+            if(Machine.GetPlayerInput.GetXTrigger) {
                 Machine.GetFSM.SwitchState((ActorState next) => { 
                     Machine.GetActor.SetSnapEnabled(false);
                 }, 
@@ -161,20 +161,21 @@ public class GroundState : ActorState
     public override void OnTriggerHit(ActorHeader.TriggerHitType triggertype, Collider trigger) { }
     private float MoveRotate(Vector3 velocity, Vector3 move, float rate)
     {
+        ActorHeader.Actor Actor = Machine.GetActor;
         Quaternion Old = Machine.GetModelView.rotation;
         
         float angularmovedifference = Vector3.Angle(velocity, move);
 
         if(angularmovedifference >= 110F)
         {
-            Machine.GetModelView.rotation = Quaternion.LookRotation(move, Vector3.up);
+            Actor.SetOrientation( Quaternion.LookRotation(move, Vector3.up) );
         }   
         else
         {
-            Machine.GetModelView.rotation = Quaternion.RotateTowards(
+            Actor.SetOrientation(  Quaternion.RotateTowards(
                     Machine.GetModelView.rotation,
                     Quaternion.LookRotation(move, Vector3.up),
-                    rate);
+                    rate) );
         }
 
         float YAngle = Vector3.SignedAngle(
