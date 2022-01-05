@@ -92,7 +92,7 @@ public class CheckGrapples : MonoBehaviour
             if(Grapples[i].index == -1)
                 continue;
             else {
-                Debug.DrawLine(Actor.position, Grapples[i].collider.transform.position, Color.cyan);
+                // Debug.DrawLine(Actor.position, Grapples[i].collider.transform.position, Color.cyan);
                 //     // Grapples[i].collider.transform.position - View.position;
                 float toi = VectorHeader.LinePlaneIntersection(
                     (Grapples[i].collider.transform.position, -Vector3.up),
@@ -102,9 +102,9 @@ public class CheckGrapples : MonoBehaviour
                 Vector3 d = Grapples[i].collider.transform.position - Vector3.up * toi - View.position;
                 float mag = d.magnitude;
 
-                Debug.DrawRay(View.position, d, Color.magenta);
-                float cur_d = VectorHeader.Dot(View.forward, d / mag);
+                // Debug.DrawRay(View.position, d, Color.magenta);
                 // float cur_d = -VectorHeader.Dot(Vector3.Cross(View.forward, d), Vector3.up);
+                float cur_d = VectorHeader.Dot(View.forward, d / mag);
 
                 if(cur_d > min_d) {
                     min_d   = cur_d;
