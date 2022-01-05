@@ -63,10 +63,6 @@ public class JumpState : ActorState
                 return ((SwingState) next).AttemptGrapple();
             }, "Swing");
 
-            // if(success) {
-            //     // i mean we don't really need to do much here
-            // }
-
             return success;
         }
         // that long mathf.abs is essentially: V ->  <- N. When v is petruding into the boundary of N. 
