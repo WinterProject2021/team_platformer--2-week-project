@@ -33,10 +33,14 @@ namespace com.cozyhome.Actors
         public enum SlideSnapType { Never = 0, Toggled = 1, Always = 2 };
         public enum MoveType
         {
-            Fly = 0, /* PM_FlyMove() */
-            Slide = 1, /* PM_SlideMove() */
+            Fly       = 0, /* PM_FlyMove() */
+            Slide     = 1, /* PM_SlideMove() */
             SlideStep = 2, /*PM_SlideStepMove() */
-            Noclip = 3 /* PM_NoclipMove() */
+            Noclip    = 3 /* PM_NoclipMove() */
+        };
+        public enum GroundTraceType {
+            Default  = 0,
+            Assigned = 1
         };
 
         // A shameless data class that I use to store grounding information. I'm not fucking bothering
@@ -78,6 +82,9 @@ namespace com.cozyhome.Actors
             [Tooltip("The snap type the actor will abide by when determining its ground state. \nNever = The actor will never snap to the ground. \nToggled = The actor will only snap to the ground if its snapenabled boolean is set to true. \nAlways = The actor will always snap to the ground.")]
             [Header("Snap Type Properties")]
             [SerializeField] private SlideSnapType SnapType = SlideSnapType.Always;
+            [Tooltip("The snap type the actor will abide by when determining its ground state. \nNever = The actor will never snap to the ground. \nToggled = The actor will only snap to the ground if its snapenabled boolean is set to true. \nAlways = The actor will always snap to the ground.")]
+            [Header("Snap Type Properties")]
+            [SerializeField] private GroundTraceType GroundTraceType = GroundTraceType.Default;
             [Tooltip("Whether or not the actor will snap to the ground if its snap type is set to SlideSnapType.Toggled enum.")]
             [SerializeField] private bool SnapEnabled = true;
             [Header("Stepping Properties")]
@@ -116,12 +123,14 @@ namespace com.cozyhome.Actors
             [System.NonSerialized] public Vector3 position;
             [System.NonSerialized] public Vector3 velocity;
             [System.NonSerialized] public Quaternion orientation;
+            [System.NonSerialized] public Vector3 groundtracedir;
 
             public RaycastHit[] Hits => _internalhits;
             public Collider[] Colliders => _internalcolliders;
             public bool IsSnapEnabled => SnapEnabled;
             public MoveType GetMoveType => MoveType;
             public SlideSnapType GetSnapType => SnapType;
+            public GroundTraceType GetGroundTraceType => GroundTraceType;
             public bool GetSnapEnabled => SnapEnabled;
             public bool GetStepEnabled => StepEnabled;
             public float GetStepHeight => StepHeight;
@@ -138,8 +147,10 @@ namespace com.cozyhome.Actors
 
             public void SetVelocity(Vector3 velocity) => this.velocity = velocity;
             public void SetPosition(Vector3 position) => this.position = position;
+            public void SetGroundTraceDir(Vector3 groundtracedir) => this.groundtracedir = groundtracedir;
             public void SetOrientation(Quaternion orientation) => this.orientation = orientation;
             public void SetMoveType(MoveType movetype) => this.MoveType = movetype;
+            public void SetGroundTraceType(GroundTraceType gtracetype) => this.GroundTraceType = gtracetype;
             public void SetSnapType(SlideSnapType snaptype) => this.SnapType = snaptype;
             public void SetSnapEnabled(bool snapenabled) => this.SnapEnabled = snapenabled;
             public void SetStepEnabled(bool stepenabled) => this.StepEnabled = stepenabled;
@@ -425,6 +436,7 @@ namespace com.cozyhome.Actors
             ArchetypeHeader.Archetype archetype = actor.GetArchetype();
             Collider self = archetype.Collider();
             SlideSnapType snaptype = actor.GetSnapType;
+            GroundTraceType gtracetype = actor.GetGroundTraceType;
             Collider[] colliderbuffer = actor.Colliders;
             LayerMask layermask = actor.Mask;
 
@@ -432,7 +444,7 @@ namespace com.cozyhome.Actors
 
             /* ground trace values */
             Vector3 gposition = position;
-            Vector3 groundtracedir = orientation * new Vector3(0, -1, 0);
+            Vector3 groundtracedir = gtracetype == GroundTraceType.Default ? orientation * new Vector3(0, -1, 0) : actor.groundtracedir;
 
             /* trace values */
             Vector3 lastplane = Vector3.zero;
@@ -916,14 +928,15 @@ namespace com.cozyhome.Actors
             ArchetypeHeader.Archetype archetype = actor.GetArchetype();
             Collider self = archetype.Collider();
             SlideSnapType snaptype = actor.GetSnapType;
+            GroundTraceType gtracetype = actor.GetGroundTraceType;
             Collider[] overlapbuffer = actor.Colliders;
             LayerMask layermask = actor.Mask;
 
             RaycastHit[] tracebuffer = actor.Hits;
 
             /* ground trace values */
-            Vector3 gposition = position;
-            Vector3 groundtracedir = orientation * new Vector3(0, -1, 0);
+            Vector3 gposition = position;            
+            Vector3 groundtracedir = gtracetype == GroundTraceType.Default ? orientation * new Vector3(0, -1, 0) : actor.groundtracedir;
 
             /* trace values */
             Vector3 lastplane = Vector3.zero;

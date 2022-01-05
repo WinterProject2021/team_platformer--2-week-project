@@ -32,20 +32,26 @@ public class SwingState : ActorState
         Vector3 P = Vector3.Cross(Tension, Vector3.up);
         P.Normalize();
 
+        // Debug.DrawRay(Actor.position, Actor.velocity, Color.red);
         Vector3 Velocity = VectorHeader.ClipVector(Actor.velocity, P);
-
         swingvel = Velocity;
 
         t_length = maxt_length = (grapple_t.position - Machine.GetActor.position).magnitude;
+
+        Actor.SetGroundTraceType(ActorHeader.GroundTraceType.Assigned);
+        Actor.SetGroundTraceDir(-Vector3.up);
     }
 
     public override void Exit(ActorState next) { }
 
     public override void OnGroundHit(ActorHeader.GroundHit ground, ActorHeader.GroundHit lastground, LayerMask layermask) { }
     public override void OnTraceHit(ActorHeader.TraceHitType tracetype, RaycastHit trace, Vector3 position, Vector3 velocity) {
-        // this.swingvel =  -Machine.GetActor.velocity;
-        // Machine.GetActor.SetVelocity( this.swingvel );
-        // this.swingvel *= Time.fixedDeltaTime;
+        // have a tolerance vector that maybe integrates over time to determine if swing should be move to a fall instead
+        // Q3:A style :)
+        
+        this.swingvel =  -Machine.GetActor.velocity;
+        Machine.GetActor.SetVelocity( this.swingvel );
+        this.swingvel *= Time.fixedDeltaTime;
     }
 
     public override void OnTriggerHit(ActorHeader.TriggerHitType triggertype, Collider trigger) { }

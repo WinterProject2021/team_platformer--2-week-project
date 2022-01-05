@@ -5,12 +5,23 @@ using com.cozyhome.Vectors;
 
 public class FallState : ActorState
 {
+    bool _onSwingEnter;
 
     public override void Enter(ActorState prev) { 
 
+        _onSwingEnter = prev.GetKey == "Swing";
+
+        ActorHeader.Actor Actor = Machine.GetActor;
+        Actor.SetGroundTraceType(ActorHeader.GroundTraceType.Assigned);
+        Actor.SetGroundTraceDir(-Vector3.up);
     }
 
-    public override void Exit(ActorState next) { }
+    public override void Exit(ActorState next) { 
+        ActorHeader.Actor Actor = Machine.GetActor;
+        Actor.SetGroundTraceType(ActorHeader.GroundTraceType.Default);
+    
+        _onSwingEnter = false;
+    }
 
     public override void OnGroundHit(ActorHeader.GroundHit ground, ActorHeader.GroundHit lastground, LayerMask layermask) { }
     public override void OnTraceHit(ActorHeader.TraceHitType tracetype, RaycastHit trace, Vector3 position, Vector3 velocity) { }
@@ -25,6 +36,17 @@ public class FallState : ActorState
 
         Velocity += Physics.gravity * fdt;
         Actor.SetVelocity(Velocity);
+
+        float d = VectorHeader.Dot(Velocity.normalized, Vector3.up); 
+        if(_onSwingEnter && d >= -.9F) {
+            Actor.orientation = Quaternion.Slerp(
+                Actor.orientation,
+                Quaternion.LookRotation(
+                    Velocity,//VectorHeader.ClipVector(Actor.orientation * Vector3.forward, Vector3.up).normalized,
+                    Vector3.up),
+                    1 - Mathf.Exp(-1F * fdt)
+            );
+        }
     }
 
     protected override void OnStateInitialize() {
