@@ -75,7 +75,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 5
+  m_Radius: 6
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2729033390549235963
 GameObject:
@@ -380,10 +380,10 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   grapples: {fileID: 2729033389243536125}
-  t_multipl: 4
+  t_multipl: 6
   mint_length: 3.5
   Timer:
-    TotalElapsedTime: 0.5
+    TotalElapsedTime: 0.66
 --- !u!136 &2729033390946966142
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -412,6 +412,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveType: 2
   SnapType: 1
+  GroundTraceType: 0
   SnapEnabled: 1
   StepEnabled: 1
   StepHeight: 0.125
